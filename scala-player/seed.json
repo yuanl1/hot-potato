@@ -1,0 +1,9 @@
+{
+  "kind" : "Regular",
+  "player": {
+    "name" : "Referee",
+    "port" : 0
+  },
+  "toss" : 0,
+  "max_toss" : 5
+}
