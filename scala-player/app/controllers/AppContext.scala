@@ -5,7 +5,7 @@ import javax.inject.Inject
 import com.google.inject.Singleton
 import com.kli.hot.potato.v0.models.Player
 import play.api.Configuration
-
+import scala.util.Random
 import scala.collection.mutable.ListBuffer
 
 
@@ -23,8 +23,7 @@ class AppContext @Inject() (config: Configuration) {
   }
 
   def getRandomOpponent: Player = {
-    val r = scala.util.Random
-    val i = r.nextInt(opponents.length)
+    val i = Random.nextInt(opponents.length)
     opponents(i)
   }
 
