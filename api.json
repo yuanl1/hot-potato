@@ -21,11 +21,18 @@
 
 
   "enums": {
-    "potato_type" : {
+    "potato_kind" : {
       "values" : [
-        { "name" : "Sweet" },
-        { "name" : "Fingerling" },
-        { "name" : "Regular" }
+        { "name" : "sweet" },
+        { "name" : "fingerling" },
+        { "name" : "regular" }
+      ]
+    },
+
+    "player_kind" : {
+      "values" : [
+        { "name" : "self" },
+        { "name" : "opponent"}
       ]
     }
   },
@@ -43,24 +50,41 @@
     "potato" : {
       "description" : "A hot potato",
       "fields" : [
-        { "name" : "type", "type": "potato_type", "default" : "Regular" },
+        { "name" : "kind", "type": "potato_kind", "default" : "regular" },
         { "name" : "player", "type": "player" },
         { "name" : "toss", "type": "integer", "default" : 0 },
         { "name" : "max_toss", "type": "integer" }
       ]
     }
-
   },
 
   "resources": {
+
+    "player": {
+      "operations": [
+        {
+          "method" : "GET",
+          "path" : "/:kind",
+          "parameters" : [
+            {"name" : "kind", "type" : "player_kind"}
+          ],
+          "responses" : {
+            "200" : { "type" : "[player]" }
+          }
+        }
+      ]
+    },
+
     "potato": {
       "operations": [
         {
           "method" : "POST",
-          "path" : "/",
+          "body": {
+              "type": "potato"
+          },
           "responses": {
             "200": { "type": "potato" },
-            "410": { "type": "potato" }
+            "410": { "type": "string" }
           }
 
         }
