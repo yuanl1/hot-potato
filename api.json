@@ -1,0 +1,71 @@
+{
+  "name": "hot-potato",
+
+  "description" : "Scala University Meetup Demo Application.",
+
+  "apidoc": {
+    "version": "0.11.26"
+  },
+
+  "info": {
+    "contact": {
+      "name": "Kevin Li",
+      "url": "www.yuankevinli.com",
+      "email": "yuankevinli@gmail.com"
+    },
+    "license": {
+      "name" : "MIT",
+      "url" : "https://raw.githubusercontent.com/yuanl1/hot-potato/master/LICENSE"
+    }
+  },
+
+
+  "enums": {
+    "potato_type" : {
+      "values" : [
+        { "name" : "Sweet" },
+        { "name" : "Fingerling" },
+        { "name" : "Regular" }
+      ]
+    }
+  },
+
+  "models": {
+
+    "player" : {
+      "description" : "A hot potato player",
+      "fields" : [
+        { "name" : "name", "type" : "string" },
+        { "name" : "port", "type" : "integer" }
+      ]
+    },
+
+    "potato" : {
+      "description" : "A hot potato",
+      "fields" : [
+        { "name" : "type", "type": "potato_type", "default" : "Regular" },
+        { "name" : "player", "type": "player" },
+        { "name" : "toss", "type": "integer", "default" : 0 },
+        { "name" : "max_toss", "type": "integer" }
+      ]
+    }
+
+  },
+
+  "resources": {
+    "potato": {
+      "operations": [
+        {
+          "method" : "POST",
+          "path" : "/",
+          "responses": {
+            "200": { "type": "potato" },
+            "410": { "type": "potato" }
+          }
+
+        }
+      ]
+    }
+  }
+
+}

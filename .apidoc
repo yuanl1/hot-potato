@@ -1,0 +1,7 @@
+code:
+  kli:
+    hot-potato:
+      version: latest
+      generators:
+        play_2_4_client: app/clients
+        play_2_x_routes: conf/routes
