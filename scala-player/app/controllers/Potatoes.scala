@@ -16,48 +16,50 @@ import scala.util.Random
 
 
 @Singleton
-class Potatoes @Inject()(actorSystem: ActorSystem, context: AppContext)(implicit exec: ExecutionContext) extends Controller {
+class Potatoes @Inject()(actorSystem: ActorSystem, players: PlayerRegistry)(implicit exec: ExecutionContext) extends Controller {
 
-  def scheduleShutdown(): Unit = actorSystem.scheduler.scheduleOnce(1.second) { System.exit(0) }
+  val THROW_DURATION = 4.seconds
 
-  def scheduleNewThrow(potato: Potato): Unit = {
 
-    actorSystem.scheduler.scheduleOnce(5.seconds){
-      val opponent = context.getRandomOpponent
+  def scheduleShutdown(): Unit = {
+    players.unregisterSelf
+    actorSystem.scheduler.scheduleOnce(1.second) { System.exit(0) }
+  }
 
-      Logger.info(s"""${context.self.name} - Tossing potato to ${opponent.name}""")
+  def scheduleNewThrow(potato: Potato): Unit = actorSystem.scheduler.scheduleOnce(THROW_DURATION){
+
+    players.getRandomOpponent.map{ opponent =>
+      val newPotato = potato.copy(toss = potato.toss + 1, player = players.self)
+
+      Logger.info(s"""Tossing potato (${newPotato.toss} of ${newPotato.maxToss}) to ${opponent.name}""")
 
       val url = s"http://localhost:${opponent.port}"
       val client = new Client(url)
-      val response = client.Potatoes.post(potato.copy(toss = potato.toss + 1, player = context.self))
+      val response = client.Potatoes.post(newPotato)
 
-      response.onFailure{
-        case e: ValueResponse =>
-          context.removeOpponent(opponent)
-          if(context.numOpponents > 0)
-            // Construct a new potato here with a random max_toss
-            scheduleNewThrow(potato.copy(toss = 0, maxToss = Random.nextInt(10), player = context.self))
-          else {
-            Logger.info(s"""${context.self.name} - Wins!!!""")
-            scheduleShutdown()
-          }
-
+      response.onFailure {
+        case r: ValueResponse if r.response.status == GONE =>
+          scheduleNewThrow(potato.copy(toss = 0, maxToss = Random.nextInt(10) + 1, player = players.self))
         case e => throw e
       }
 
+      Unit
+    }.getOrElse {
+      Logger.info("Wins!!!")
+      scheduleShutdown()
     }
   }
 
   def post() = Action(parse.json[Potato]) { request =>
     val potato: Potato  = request.body
-    Logger.info(s"${context.self.name} - Received the potato from ${potato.player.name}")
+    Logger.info(s"Caught potato from ${potato.player.name}")
 
-    if (potato.toss == potato.maxToss) {
-      Logger.info(s"${context.self.name} - BOOOOOOMMMMMMMM")
+    if (potato.toss >= potato.maxToss) {
+      Logger.info(s"BOOOOOOMMMMMMMM")
       scheduleShutdown()
       Gone("I'm Dead :(")
     } else {
-      Logger.info(s"${context.self.name} - Winding up for throw...")
+      Logger.info(s"Winding up for throw...($THROW_DURATION)")
       scheduleNewThrow(potato)
       Ok(Json.toJson(potato))
     }

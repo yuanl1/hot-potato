@@ -9,13 +9,14 @@ echo "Base port" $base_port
 echo "Num players" $num_players
 echo "Max port" $max_port
 
+# Ensure we've compiled and staged the app first
 activator compile
 activator stage
 
 
 for (( p=$base_port; p<=max_port; p++ )) do
-    echo $hot_potato_exec -Dhttp.port=$p -Dstart_port=$base_port -Dend_port=$max_port &   
-    $hot_potato_exec -Dhttp.port=$p -Dstart_port=$base_port -Dend_port=$max_port &
+    echo $hot_potato_exec -Dhttp.port=$p &   
+    $hot_potato_exec -Dhttp.port=$p &
 done
 
 
