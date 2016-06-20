@@ -27,13 +27,6 @@
         { "name" : "fingerling" },
         { "name" : "regular" }
       ]
-    },
-
-    "player_kind" : {
-      "values" : [
-        { "name" : "self" },
-        { "name" : "opponent"}
-      ]
     }
   },
 
@@ -64,10 +57,6 @@
       "operations": [
         {
           "method" : "GET",
-          "path" : "/:kind",
-          "parameters" : [
-            {"name" : "kind", "type" : "player_kind"}
-          ],
           "responses" : {
             "200" : { "type" : "[player]" }
           }

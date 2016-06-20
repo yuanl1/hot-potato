@@ -14,7 +14,7 @@ import com.kli.hot.potato.v0.models.json._
 @Singleton
 class Players @Inject() (players: PlayerRegistry)(implicit exec: ExecutionContext) extends Controller {
 
-  def getByKind(kind: PlayerKind) = Action {
+  def get = Action {
     Ok(Json.toJson(players.getPlayers))
   }
 
