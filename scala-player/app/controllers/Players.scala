@@ -2,8 +2,9 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 import play.api._
-import play.api.libs.json.Json
 import play.api.mvc._
+import play.api.libs.json.Json
+import services.PlayerRegistry
 import scala.concurrent.ExecutionContext
 import com.kli.hot.potato.v0.models._
 import com.kli.hot.potato.v0.models.json._

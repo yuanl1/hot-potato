@@ -8,7 +8,8 @@ import com.kli.hot.potato.v0.errors.ValueResponse
 import play.api._
 import play.api.libs.json.Json
 import play.api.mvc._
-import scala.concurrent.{ExecutionContext, Future, Promise}
+import services.PlayerRegistry
+import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
 import com.kli.hot.potato.v0.models._
 import com.kli.hot.potato.v0.models.json._

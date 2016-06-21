@@ -1,18 +1,18 @@
-package controllers
+package services
 
 import java.net.InetSocketAddress
-import javax.inject.Inject
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 import com.kli.hot.potato.v0.models.Player
 import com.kli.hot.potato.v0.models.json._
-import com.loopfor.zookeeper.{Configuration => ZkConfig, Ephemeral, ACL, Zookeeper}
-import play.api.{Logger, Configuration}
+import com.loopfor.zookeeper.{ACL, Configuration => ZkConfig, Ephemeral, Zookeeper}
 import play.api.inject.ApplicationLifecycle
 import play.api.libs.json.Json
+import play.api.{Configuration, Logger}
 
 import scala.concurrent.Future
-import scala.util.{Try, Random}
+import scala.util.{Random, Try}
+
 
 
 @Singleton
@@ -54,7 +54,6 @@ class PlayerRegistry @Inject() (config: Configuration, appLifeCycle: Application
 
   def getPlayers: Seq[Player] = {
     val nodes = zkClient.sync.children("/hot-potato")
-    println(nodes.toString)
     nodes.map{ node =>
       val (data, status) = zkClient.sync.get(s"/hot-potato/$node")
       Json.fromJson[Player](Json.parse(data)).get
